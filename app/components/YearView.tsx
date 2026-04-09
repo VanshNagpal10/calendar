@@ -18,7 +18,15 @@ const MONTHS = [
   'December',
 ];
 
-const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const WEEKDAY_LABELS = [
+  { id: 'mon', label: 'Mo' },
+  { id: 'tue', label: 'Tu' },
+  { id: 'wed', label: 'We' },
+  { id: 'thu', label: 'Th' },
+  { id: 'fri', label: 'Fr' },
+  { id: 'sat', label: 'Sa' },
+  { id: 'sun', label: 'Su' },
+];
 
 function buildMiniMonth(year: number, month: number) {
   const firstDay = new Date(year, month, 1).getDay();
@@ -111,8 +119,15 @@ export default function YearView({
           {MONTHS.map((label, monthIndex) => {
             const cells = buildMiniMonth(year, monthIndex);
             const currentMonthKeys = cells.filter((cell) => cell.type === 'current').map((cell) => cell.key);
-            const noteCount = currentMonthKeys.filter((key) => dayData[key]?.notes.trim()).length;
-            const birthdayCount = currentMonthKeys.filter((key) => dayData[key]?.birthday).length;
+            const highlightCount = currentMonthKeys.filter((key) => {
+              const entry = dayData[key];
+              return Boolean(
+                entry?.notes.trim() ||
+                  entry?.reminders.length ||
+                  entry?.birthday ||
+                  (holidays[key] ?? []).length
+              );
+            }).length;
 
             return (
               <button
@@ -120,16 +135,19 @@ export default function YearView({
                 className={`mini-month${currentMonth === monthIndex ? ' active-month' : ''}`}
                 type="button"
                 onClick={() => onSelectMonth(year, monthIndex)}
+                aria-label={`${label} ${year}, ${highlightCount} marked day${highlightCount === 1 ? '' : 's'}`}
               >
                 <div className="mini-month-header">
                   <span className="mini-month-name">{label}</span>
-                  <span className="mini-month-meta">{noteCount + birthdayCount} highlights</span>
+                  <span className="mini-month-meta">
+                    {highlightCount ? `${highlightCount} marked` : 'Open month'}
+                  </span>
                 </div>
 
                 <div className="mini-cal-grid">
                   {WEEKDAY_LABELS.map((weekday) => (
-                    <span key={`${label}-${weekday}`} className="mini-day mini-header">
-                      {weekday}
+                    <span key={`${label}-${weekday.id}`} className="mini-day mini-header">
+                      {weekday.label}
                     </span>
                   ))}
 
