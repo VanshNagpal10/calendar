@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Paperframe Calendar
 
-## Getting Started
+Paperframe Calendar is an interview-ready interactive wall calendar built with Next.js 16, React 19, and client-side persistence. The experience starts from a physical hanging calendar aesthetic and adds modern interactions without needing any backend or external APIs.
 
-First, run the development server:
+## Highlights
+
+- Custom monthly hero artwork with drag-and-drop or file upload, plus reset-to-default
+- Day range selection with clear start, end, and in-between states
+- Monthly memo pad for broader planning notes
+- Per-day modal for notes, reminders, and birthdays
+- Whole-year overview overlay for quick month navigation
+- Dark and light mode
+- Compact live clock and focus countdown timer
+- Fully client-side persistence with `localStorage`
+- Responsive layout tuned for desktop and touch devices
+
+## Design Choices
+
+- The main view stays month-focused so the wall-calendar aesthetic remains strong.
+- A full-year overlay gives fast navigation without overcrowding the primary layout.
+- Default artwork is generated locally as inline SVG so the project still works without external image or font requests.
+- State stays in one client component and is passed to presentational children through plain props.
+
+## Running Locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+For verification:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## Persistence Notes
 
-To learn more about Next.js, take a look at the following resources:
+This project intentionally avoids a backend. It stores the following in `localStorage`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Theme preference
+- Month-level notes
+- Day-level notes, reminders, and birthday flags
+- Uploaded month artwork
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+If stored data becomes invalid, the app falls back gracefully to empty/default state.
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `app/page.tsx`: server entry point that loads the interactive calendar
+- `app/components/CalendarApp.tsx`: single client-side state owner
+- `app/components/MonthCalendar.tsx`: main date grid and range interactions
+- `app/components/DayModal.tsx`: per-day editing for notes, reminders, and birthdays
+- `app/components/YearView.tsx`: year overview overlay
+- `app/default-art.ts`: offline-safe default month artwork
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Demo Walkthrough Checklist
+
+Use this for the required screen recording:
+
+1. Show the desktop layout and wall-calendar aesthetic.
+2. Upload a custom image for a month, then reset it back to the default.
+3. Select a date range and point out the visual states.
+4. Open a day, add notes, reminders, and a birthday, then show the dots in the month and year views.
+5. Edit the monthly notes panel.
+6. Toggle dark mode.
+7. Show the focus timer running.
+8. Resize to mobile width and demonstrate range selection, day editing, and the stacked layout.
+
+## Tech Stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- CSS with custom properties and no backend dependencies
